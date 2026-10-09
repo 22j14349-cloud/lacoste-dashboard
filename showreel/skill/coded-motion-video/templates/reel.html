@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Reel</title>
+<style>html,body{margin:0;background:#000}canvas{display:block;max-width:100vw;height:auto}</style>
+</head>
+<body>
+<canvas id="out"></canvas>
+<script>
+"use strict";
+/* =====================================================================
+   REEL TEMPLATE — deterministic Canvas 2D motion graphics engine.
+   Contract: every pixel is a pure function of time t (seconds). No state
+   carried between frames, no Math.random() — use hash(i, seed). That is
+   what makes parallel rendering and true sub-frame motion blur possible.
+
+   Edit: CONFIG, palette, SCENES, CUTS, IMPACTS, FLASHES, CHAPTERS.
+   Preview: reel.html?t=3.2 (one frame)  ·  reel.html?play (realtime, no blur)
+   ===================================================================== */
+
+/* ------------------------------ CONFIG ----------------------------- */
+const W = 1920, H = 1080, FPS = 60;          // 1080x1920 for vertical, 1080x1080 square
+const BPM = 128, BEATS = 16;                 // pick BPM so BEATS * 60 / BPM == target seconds
+const B = 60 / BPM, DUR = BEATS * B, TOTAL = Math.round(DUR * FPS);
+const SHUTTER = 0.55, SAMPLES = 6;           // 0.55 of a frame open (~198°), 6 sub-frames averaged
+const HUD_ON = true;
+const C = { ink: '#0E0E10', cream: '#F2EEE3', clay: '#E8613C', cobalt: '#2C3DFF', acid: '#D8FF45' };
+const DISPLAY = '"Inter Display"', TEXT = 'Inter';   // check `fc-list : family` for what exists
+const TAU = Math.PI * 2;
+
+/* ------------------------------ math ------------------------------ */
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (x, a, b) => clamp((x - a) / (b - a));       // 0..1 progress of x through [a, b]
+const E = {
+  inQuad: t => t * t, outCubic: t => 1 - (1 - t) ** 3, inCubic: t => t * t * t,
+  inOutCubic: t => t < .5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2,
+  outExpo: t => t >= 1 ? 1 : 1 - 2 ** (-10 * t), inExpo: t => t <= 0 ? 0 : 2 ** (10 * t - 10),
+  outBack: t => { const s = 1.9; return 1 + (s + 1) * (t - 1) ** 3 + s * (t - 1) ** 2; },
+};
+function cubicBezier(x1, y1, x2, y2) {
+  const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx, cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+  const sx = t => ((ax * t + bx) * t + cx) * t, sy = t => ((ay * t + by) * t + cy) * t, dx = t => (3 * ax * t + 2 * bx) * t + cx;
+  return x => { if (x <= 0) return 0; if (x >= 1) return 1; let t = x;
+    for (let i = 0; i < 10; i++) { const e = sx(t) - x, d = dx(t); if (Math.abs(e) < 1e-6 || Math.abs(d) < 1e-6) break; t -= e / d; }
+    return sy(clamp(t)); };
+}
+const EZ = cubicBezier(.75, 0, .15, 1);                     // house ease: hard in, buttery out
+const spring = (t, f = 2.2, z = 6) => t <= 0 ? 0 : 1 - Math.exp(-z * t) * Math.cos(TAU * f * t);  // t in seconds
+function hash(i, s = 0) {
+  let x = Math.imul(i ^ 0x9E3779B9, 0x85EBCA6B) ^ Math.imul(s + 0x632BE5AB, 0xC2B2AE35);
+  x ^= x >>> 16; x = Math.imul(x, 0x7FEB352D); x ^= x >>> 15; x = Math.imul(x, 0x846CA68B); x ^= x >>> 16;
+  return (x >>> 0) / 4294967296;
+}
+const wob = x => Math.sin(x * 1.7) * .5 + Math.sin(x * 3.1 + 1.3) * .3 + Math.sin(x * 7.3 + 4.1) * .2;
+
+/* ----------------------------- canvases ---------------------------- */
+const out = document.getElementById('out'); out.width = W; out.height = H;
+const octx = out.getContext('2d');
+const mk = (w = W, h = H, rf = false) => { const c = document.createElement('canvas'); c.width = w; c.height = h; c.ctx = c.getContext('2d', { willReadFrequently: rf }); return c; };
+const layer = mk(), g = layer.ctx, tmp = mk(), tint = mk(), vignette = mk();
+
+/* ------------------------------- type ------------------------------ */
+const font = (px, w = 900, fam = DISPLAY) => `${w} ${px}px ${fam}`;
+let CAP = 0.727;                                             // measured in init()
+const layoutCache = new Map();
+function layout(text, fnt, ls = 0) {                         // per-letter x offsets that keep kerning
+  const key = text + '|' + fnt + '|' + ls; let L = layoutCache.get(key); if (L) return L;
+  g.save(); g.font = fnt; g.letterSpacing = ls + 'px';
+  const xs = []; for (let i = 0; i <= text.length; i++) xs.push(g.measureText(text.slice(0, i)).width);
+  g.restore();
+  L = { text, fnt, ls, xs, width: xs[text.length] - (text.length ? ls : 0) }; layoutCache.set(key, L); return L;
+}
+function wordGeom(text, px, maxW = W * 0.85, w = 900) {      // fit-to-width, centred
+  let f = font(px, w), L = layout(text, f);
+  if (L.width > maxW) { px = px * maxW / L.width; f = font(px, w); L = layout(text, f); }
+  return { f, L, px, x0: (W - L.width) / 2, cap: px * CAP, text };
+}
+const letterW = (L, i) => L.xs[i + 1] - L.xs[i] - L.ls;
+function bg(col) { g.fillStyle = col; g.fillRect(-200, -200, W + 400, H + 400); }   // overscan for shake
+function dotPath(p, x, y, r) { p.moveTo(x + r, y); p.arc(x, y, r, 0, TAU); }
+
+/* =====================================================================
+   SCENES — each draws one sub-frame into `g`. Args: t (s), b (beats), lb (beats since scene start).
+   Batch shapes into Path2D and fill/stroke once; wrap state changes in save()/restore().
+   ===================================================================== */
+
+// 1 · A ball with honest gravity: drop, squash, settle, then dive at the lens (its colour becomes the next bg).
+const FLOOR = H * 0.7, R = 34, GR = 3440 /* px per beat² */, HITS = [1, 2, 2.5, 2.75];
+function ballY(b) {
+  const yg = FLOOR - R;
+  if (b < 1) { const tau = Math.max(0, b - 0.2); return yg - 0.5 * GR * 0.64 + 0.5 * GR * tau * tau; }   // from rest at b=0.2
+  for (let i = 0; i < HITS.length - 1; i++) if (b < HITS[i + 1]) {
+    const T = HITS[i + 1] - HITS[i], u = b - HITS[i]; return yg - (0.5 * GR * T * u - 0.5 * GR * u * u);  // apex = g T² / 8
+  }
+  return yg;
+}
+function sceneDrop(t, b) {
+  bg(C.ink);
+  const fade = 1 - prog(b, 3.2, 3.5);
+  g.save(); g.globalAlpha = 0.5 * fade; g.strokeStyle = C.cream; g.lineWidth = 2;
+  const fl = E.outExpo(prog(b, 0.05, 0.9)) * W * 0.35;
+  g.beginPath(); g.moveTo(W / 2 - fl, FLOOR); g.lineTo(W / 2 + fl, FLOOR); g.stroke(); g.restore();
+  let x = W / 2, y = ballY(b), sx = 1, sy = 1, r = R;
+  let lh = -1; for (const h of HITS) if (b >= h) lh = h;
+  if (lh >= 0 && b - lh < 0.075) { const q = Math.sin(Math.PI * (b - lh) / 0.075); sy = 1 - 0.45 * q; sx = 1 + 0.5 * q; y = FLOOR - R * sy; }  // impact squash
+  else if (b < 3) { const v = Math.abs(ballY(b + 0.004) - ballY(b - 0.004)) / 0.008; sy = 1 + 0.3 * clamp(v / 1720); sx = 1 / sy; y = Math.min(y, FLOOR - R * sy); } // stretch along velocity
+  if (b >= 3) { const q = E.outCubic(prog(b, 3, 3.25)); sy = 1 - 0.4 * q; sx = 1 + 0.4 * q; y = FLOOR - R * sy; }   // anticipation
+  if (b >= 3.25) { sx = sy = 1; y = lerp(FLOOR - R, H / 2, E.outCubic(prog(b, 3.25, 3.5))); r = R * lerp(1, 40, E.inExpo(prog(b, 3.35, 3.97))); }
+  if (b > 0.55) { g.save(); g.translate(x, y); g.scale(sx, sy); g.fillStyle = C.clay; g.beginPath(); g.arc(0, 0, r, 0, TAU); g.fill(); g.restore(); }
+}
+
+// 2 · Masked per-letter rise, slow push-in, staggered exit.
+function sceneTitle(t, b, lb) {
+  bg(C.clay);
+  const G = wordGeom('MOTION', 360), base = H / 2 + G.cap / 2, sc = 1 + 0.04 * prog(lb, 0, 4);
+  g.save(); g.translate(W / 2, H / 2); g.scale(sc, sc); g.translate(-W / 2, -H / 2);
+  g.beginPath(); g.rect(0, base - G.cap - 16, W, G.cap + 30); g.clip();
+  g.font = G.f; g.fillStyle = C.ink;
+  for (let i = 0; i < G.text.length; i++) {
+    const inE = E.outExpo(prog(lb - i * 0.055, 0, 0.5)), outE = E.inCubic(prog(lb - 3.3 - i * 0.04, 0, 0.45));
+    g.save(); g.translate(G.x0 + G.L.xs[i], base + (1 - inE) * (G.cap + 40) - outE * (G.cap + 40)); g.rotate((1 - inE) * 0.14);
+    g.fillText(G.text[i], 0, 0); g.restore();
+  }
+  g.restore();
+}
+
+// 3 · Beat-reactive dot field: a ripple launched from the centre on every beat.
+function sceneGrid(t, b, lb) {
+  bg(C.cobalt);
+  const sp = 48, p = new Path2D(), on = E.outExpo(prog(lb, 0, 0.4));
+  for (let y = sp / 2; y < H; y += sp) for (let x = sp / 2; x < W; x += sp) {
+    const d = Math.hypot(x - W / 2, y - H / 2) / 900;
+    let r = 3;
+    for (let k = Math.max(0, Math.floor(lb) - 1); k <= Math.floor(lb); k++) { const a = lb - k - d; if (a > 0) r += 13 * Math.exp(-a * 4) * Math.sin(Math.min(a * 9, Math.PI)); }
+    dotPath(p, x, y, Math.max(0.5, r * on));
+  }
+  g.fillStyle = C.acid; g.fill(p);
+}
+
+// 4 · End card: title holds, subtitle reveals, the opening ball returns as the full stop.
+function sceneEnd(t, b, lb) {
+  bg(C.cream);
+  const G = wordGeom('YOUR NAME', 260), base = H / 2 + 40, pr = 30;
+  const x0 = (W - G.L.width - 2 * pr - 20) / 2;
+  const push = 1 + 0.02 * prog(lb, 0, 4) + 0.05 * (1 - E.outExpo(prog(lb, 0, 0.6)));
+  g.save(); g.translate(W / 2, H / 2); g.scale(push, push); g.translate(-W / 2, -H / 2);
+  g.font = G.f; g.fillStyle = C.ink; g.fillText(G.text, x0, base);
+  if (lb > 1) {                                                // ball drops in as the period
+    const tau = lb - 1, land = 0.5, rest = base - pr;
+    let y = tau < land ? rest - 0.5 * GR * land * land + 0.5 * GR * tau * tau : rest, sq = tau >= land ? Math.exp(-(tau - land) * 18) * Math.sin(Math.min(Math.PI, (tau - land) * 40)) : 0;
+    g.save(); g.translate(x0 + G.L.width + 20 + pr, y + pr * 0.45 * sq); g.scale(1 + 0.5 * sq, 1 - 0.45 * sq);
+    g.fillStyle = C.clay; g.beginPath(); g.arc(0, 0, pr, 0, TAU); g.fill(); g.restore();
+  }
+  const sub = 'MOTION DESIGN', SL = layout(sub, font(34, 700, TEXT), 14), sx0 = (W - SL.width) / 2;
+  g.beginPath(); g.rect(0, base + 40, W, 60); g.clip();
+  g.font = font(34, 700, TEXT); g.letterSpacing = '14px';
+  for (let i = 0; i < sub.length; i++) g.fillText(sub[i], sx0 + SL.xs[i], base + 90 + (1 - E.outExpo(prog(lb - 0.3 - i * 0.03, 0, 0.5))) * 60);
+  g.restore();
+}
+
+/* ------------------------------ timeline --------------------------- */
+// [fromBeat, toBeat, draw, hudColour]
+const SCENES = [[0, 4, sceneDrop, C.cream], [4, 8, sceneTitle, C.ink], [8, 12, sceneGrid, C.cream], [12, 16, sceneEnd, null]];
+const CUTS = [4, 8, 12];                     // hard cuts (beats): motion-blur samples never straddle these
+const IMPACTS = [[4, 10, 6], [8, 6, 4], [12, 8, 4]];        // [beat, shake px, chromatic px]
+const FLASHES = [[8, '#ffffff', 0.35]];      // [beat, colour, alpha] — decays in ~3 frames
+const CHAPTERS = [[0, '01', 'TIMING'], [4, '02', 'TYPE'], [8, '03', 'RHYTHM']];
+
+/* =========================== ENGINE (rarely edited) =========================== */
+const CUT_S = CUTS.map(x => x * B);
+function segmentOf(t) { let s0 = 0, s1 = DUR; for (const c of CUT_S) { if (c <= t) s0 = c; else { s1 = c; break; } } return [s0, s1]; }
+function sceneAt(b) { for (const s of SCENES) if (b < s[1]) return s; return SCENES[SCENES.length - 1]; }
+function shakeAt(t) {
+  let x = 0, y = 0, r = 0;
+  for (const [bb, a] of IMPACTS) { const dt = t - bb * B; if (dt < 0 || dt > 0.7) continue; const e = a * Math.exp(-dt * 9);
+    x += e * wob(dt * 40 + bb * 13); y += e * wob(dt * 43 + bb * 7 + 5); r += e * 0.0009 * wob(dt * 37 + bb); }
+  return { x, y, r };
+}
+function chromaAt(t) { let s = 0; for (const [bb, , c] of IMPACTS) { const dt = t - bb * B; if (dt >= 0 && dt < 0.5) s += c * Math.exp(-dt * 11); } return s; }
+function chroma(amt) {                       // radial chromatic aberration: tint R/G/B copies, scale R & G up, add
+  tmp.ctx.globalCompositeOperation = 'copy'; tmp.ctx.drawImage(layer, 0, 0);
+  g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.globalCompositeOperation = 'copy'; g.fillStyle = '#000'; g.fillRect(0, 0, W, H);
+  g.globalCompositeOperation = 'lighter';
+  for (const [col, s] of [['#ff0000', 1 + 2 * amt / W], ['#00ff00', 1 + amt / W], ['#0000ff', 1]]) {
+    const tc = tint.ctx; tc.globalCompositeOperation = 'copy'; tc.drawImage(tmp, 0, 0);
+    tc.globalCompositeOperation = 'multiply'; tc.fillStyle = col; tc.fillRect(0, 0, W, H); tc.globalCompositeOperation = 'source-over';
+    g.drawImage(tint, W / 2 - W * s / 2, H / 2 - H * s / 2, W * s, H * s);
+  }
+  g.restore();
+}
+function renderSub(t) {
+  const b = t / B, sc = sceneAt(b);
+  g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+  g.textAlign = 'left'; g.textBaseline = 'alphabetic'; g.letterSpacing = '0px';
+  const s = shakeAt(t); g.translate(W / 2 + s.x, H / 2 + s.y); g.rotate(s.r); g.translate(-W / 2, -H / 2);
+  sc[2](t, b, b - sc[0]);
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  const a = chromaAt(t); if (a > 0.6) chroma(a);
+}
+function drawHUD(ctx, t) {
+  const b = t / B, col = sceneAt(b)[3]; if (!HUD_ON || !col) return;
+  const A = E.outExpo(prog(t, 0.05, 0.75));
+  ctx.save(); ctx.fillStyle = col; ctx.textBaseline = 'alphabetic'; ctx.letterSpacing = '3px';
+  let ci = 0; for (let i = 0; i < CHAPTERS.length; i++) if (b >= CHAPTERS[i][0]) ci = i;
+  const p = E.outExpo(prog(b - CHAPTERS[ci][0], 0, 0.45));
+  ctx.font = font(17, 700, TEXT); ctx.globalAlpha = 0.9 * A; ctx.textAlign = 'right';
+  ctx.save(); ctx.beginPath(); ctx.rect(W - 600, 40, 560, 36); ctx.clip();
+  ctx.fillText(CHAPTERS[ci][1] + '  —  ' + CHAPTERS[ci][2], W - 56, 66 + 34 * (1 - p)); ctx.restore();
+  const fr = Math.round(t * FPS), tc = `00:00:${String(Math.floor(fr / FPS)).padStart(2, '0')}:${String(fr % FPS).padStart(2, '0')}`;
+  ctx.textAlign = 'center'; ctx.letterSpacing = '0px'; ctx.font = font(17, 600, TEXT);
+  for (let i = 0; i < tc.length; i++) ctx.fillText(tc[i], 62 + i * 12.5, H - 48);          // hand-monospaced timecode
+  ctx.globalAlpha = 0.22 * A; ctx.fillRect(56, H - 84, W - 112, 2);
+  ctx.globalAlpha = 0.95 * A; ctx.fillRect(56, H - 84, (W - 112) * t / DUR, 2);
+  ctx.restore();
+}
+function post(t) {
+  octx.globalAlpha = 0.6; octx.drawImage(vignette, 0, 0); octx.globalAlpha = 1;
+  for (const [fb, col, a0] of FLASHES) { const dt = t - fb * B; if (dt < 0 || dt > 0.2) continue;
+    octx.globalAlpha = a0 * Math.exp(-dt * 48); octx.fillStyle = col; octx.fillRect(0, 0, W, H); octx.globalAlpha = 1; }
+}
+window.renderFrame = function (f, opts = {}) {
+  const tc = f / FPS, N = opts.samples || SAMPLES, [s0, s1] = segmentOf(tc);
+  for (let k = 0; k < N; k++) {
+    const ts = clamp(N === 1 ? tc : tc + ((k + 0.5) / N - 0.5) * SHUTTER / FPS, s0, s1 - 1e-5);
+    renderSub(ts);
+    octx.globalAlpha = 1 / (k + 1); octx.drawImage(layer, 0, 0);       // running average = motion blur
+  }
+  octx.globalAlpha = 1; post(tc); drawHUD(octx, tc);
+  return opts.noExport ? null : out.toDataURL('image/png');
+};
+async function init() {
+  await Promise.all([font(100, 900), font(20, 600, TEXT), font(20, 700, TEXT)].map(f => document.fonts.load(f)));
+  g.font = font(100); CAP = g.measureText('H').actualBoundingBoxAscent / 100;
+  const v = vignette.ctx, gr = v.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.55, W / 2, H / 2, Math.hypot(W, H) * 0.55);
+  gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,0.38)'); v.fillStyle = gr; v.fillRect(0, 0, W, H);
+  // Precompute heavy one-off data here (text samples for particles, grid cells, ...).
+  return { frames: TOTAL, width: W, height: H, fps: FPS };
+}
+window.READY = init().then(info => {
+  const q = new URLSearchParams(location.search);
+  if (q.has('t')) window.renderFrame(Math.round(parseFloat(q.get('t')) * FPS), { noExport: true });
+  else if (q.has('play')) { const t0 = performance.now(); const loop = () => { window.renderFrame(Math.floor((performance.now() - t0) / 1000 * FPS) % TOTAL, { noExport: true, samples: 1 }); requestAnimationFrame(loop); }; loop(); }
+  return info;
+});
+</script>
+</body>
+</html>

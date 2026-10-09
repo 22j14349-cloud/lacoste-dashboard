@@ -21,6 +21,10 @@ Everything is made in code. There are no templates, stock footage, plugins or sa
 | 24–28 | 07 Convergence | The drop: a burst, a vortex of 3,343 particles, then a spiral into the name. |
 | 28–32 | 08 End card | The opening ball returns and lands as the full stop. |
 
+## Skill
+
+This workflow is packaged as a reusable skill in [`skill/coded-motion-video/`](skill/coded-motion-video/SKILL.md). It includes the reel template, score kit, renderer, build and review tools.
+
 ## Build
 
 ```sh
