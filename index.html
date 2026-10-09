@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lacoste Dashboard · Overview</title>
+<meta name="description" content="Interactive brand dashboard about Lacoste: sales, markets, sport, products, sustainability and rivals, built from public sources.">
+<link rel="icon" href="assets/img/lacoste-logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script>(function(){var t;try{t=localStorage.getItem("lc-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
+</head>
+<body data-page="overview">
+<main class="page" id="page">
+
+  <section class="hero" data-reveal>
+    <div style="position:relative;z-index:1">
+      <span class="eyebrow">Brand intelligence · October 2026</span>
+      <h1>Ninety-three years of the <em>crocodile</em>.</h1>
+      <p>An interactive look at Lacoste — the French sportswear house René Lacoste co-founded in 1933 — built from public sources: sales, markets, sport, products and sustainability.</p>
+      <div class="hero-actions">
+        <a class="btn light" href="financials.html"><i data-lucide="trending-up"></i>Explore financials</a>
+        <a class="btn ghost" href="global.html"><i data-lucide="globe"></i>Open the world map</a>
+      </div>
+    </div>
+    <div class="hero-logo">
+      <img src="assets/img/lacoste-logo.webp" alt="Lacoste crocodile logo and wordmark">
+      <span class="since">SINCE 1933</span>
+    </div>
+  </section>
+
+  <section class="grid kpi-grid" id="kpis" aria-label="Key figures"></section>
+
+  <section class="grid mt-20">
+    <article class="card span-8" data-reveal>
+      <header class="card-head">
+        <div>
+          <h3>Sales trajectory and the €4bn goal</h3>
+          <p class="sub">Brand sales, € billions · ● reported ○ estimate · dashed = illustrative path to target</p>
+        </div>
+        <div class="card-tools"></div>
+      </header>
+      <div class="chart" id="trajectory" style="height:320px"></div>
+      <footer class="card-foot" data-src="s7 s8 s9 s10 s13"></footer>
+    </article>
+
+    <article class="card span-4" data-reveal>
+      <header class="card-head">
+        <div>
+          <h3>Progress to €4bn</h3>
+          <p class="sub">2024 sales as a share of the 2028–30 target</p>
+        </div>
+      </header>
+      <div class="chart" id="gauge" style="height:210px;min-height:210px"></div>
+      <div class="stat-row mt-8">
+        <div class="mini-stat"><div class="v">≈ 4.9%</div><div class="l">a year needed to hit €4bn by 2030</div></div>
+        <div class="mini-stat"><div class="v">≈ 7.5%</div><div class="l">a year needed by 2028</div></div>
+      </div>
+      <p class="small muted mt-12">Management guides to 5–10% annual growth. Required rates are this dashboard's arithmetic from ≈ €3.0bn in 2024.</p>
+      <footer class="card-foot" data-src="s8 s13"></footer>
+    </article>
+  </section>
+
+  <section class="grid mt-20">
+    <article class="card span-7" data-reveal>
+      <header class="card-head">
+        <div><h3>Latest news</h3><p class="sub">October 2025 – October 2026</p></div>
+        <span class="badge neutral">13 stories</span>
+      </header>
+      <ul class="feed" id="feed"></ul>
+      <footer class="card-foot" data-src="s3 s13 s15"></footer>
+    </article>
+
+    <article class="card span-5" data-reveal>
+      <header class="card-head"><div><h3>At a glance</h3><p class="sub">Who runs the crocodile</p></div></header>
+      <dl class="kv" id="glance"></dl>
+      <div class="callout mt-16"><i data-lucide="info"></i><span>Lacoste is privately owned, so it publishes no full accounts. Figures come from executives, filings and trade press — each one is tagged <b>Reported</b> or <b>Estimate</b>.</span></div>
+      <footer class="card-foot" data-src="s1 s2 s12 s13"></footer>
+    </article>
+  </section>
+
+  <section class="mt-20">
+    <div class="page-head" style="margin-bottom:14px">
+      <div><span class="eyebrow">Explore</span><h2 class="page-title" style="font-size:28px">Seven views of the brand</h2></div>
+    </div>
+    <div class="grid" id="explore"></div>
+  </section>
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/pages/overview.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lacoste Dashboard · Sources & method</title>
+<meta name="description" content="Every source behind the Lacoste dashboard and how estimates were derived.">
+<link rel="icon" href="assets/img/lacoste-logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script>(function(){var t;try{t=localStorage.getItem("lc-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
+<style>
+  .search {
+    display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 12px;
+    background: var(--surface); border: 1px solid var(--line); min-width: 0; flex: 1; max-width: 360px;
+  }
+  .search svg { width: 16px; height: 16px; color: var(--muted); flex: none; }
+  .search input { border: 0; outline: 0; background: transparent; font: inherit; color: var(--ink); width: 100%; }
+  .src-table a { word-break: break-word; }
+</style>
+</head>
+<body data-page="sources">
+<main class="page" id="page">
+
+  <header class="page-head" data-reveal>
+    <div>
+      <span class="eyebrow">Sources & method</span>
+      <h1 class="page-title">Where every number comes from</h1>
+      <p class="page-lede">Lacoste is privately owned and publishes no full accounts. This dashboard uses only public sources, gathered up to <span id="asof"></span>. Every figure links back here.</p>
+    </div>
+  </header>
+
+  <section class="grid">
+    <article class="card span-7" data-reveal>
+      <header class="card-head">
+        <div><h3>Sources</h3><p class="sub" id="srcCount"></p></div>
+        <label class="search"><i data-lucide="search"></i><input id="q" type="search" placeholder="Filter sources…" aria-label="Filter sources"></label>
+      </header>
+      <div style="overflow-x:auto"><table class="data src-table" id="srcTable"></table></div>
+    </article>
+
+    <article class="card span-5" data-reveal>
+      <header class="card-head"><div><h3>Method notes</h3><p class="sub">How to read the badges and estimates</p></div></header>
+      <div class="notes">
+        <div class="note"><span class="badge reported">Reported</span><br>Stated by Lacoste, a named executive, a regulatory filing or the company's own reports.</div>
+        <div class="note"><span class="badge estimate">Estimate</span><br>Derived here from reported figures. Example: 2023 sales ≈ €3.0bn ÷ 1.08 ≈ €2.75bn, because 2024 grew 8%.</div>
+        <div class="note"><b>2019 and 2021 sales.</b> The CEO said 2021 was "back to 2019 levels", and 2022 sales of €2.5bn were +26%. So 2021 ≈ €2.5bn ÷ 1.26 ≈ €2.0bn, and 2019 is about the same.</div>
+        <div class="note"><b>Conflicts.</b> Wikipedia lists €2.9bn for 2023; trade press says "close to €3bn" for 2024. The €4bn target has been dated 2026, 2027 and 2028–30 over time — the dashboard uses the latest (2028–30). A 2011 figure of €1.6bn covers licensees' sales, so it isn't on the same basis as later numbers.</div>
+        <div class="note"><b>Currency.</b> US-dollar revenues are converted at 1 EUR = 1.15 USD, an approximate 2025–26 average.</div>
+        <div class="note"><b>Illustrative charts.</b> Growth scenarios and climate pathways are straight compounding or straight lines to stated targets — not forecasts or reported progress.</div>
+        <div class="note"><b>Chart colours</b> were checked with a colour-vision-deficiency validator. Every chart also has a Table view.</div>
+      </div>
+    </article>
+  </section>
+
+</main>
+<script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/pages/sources.js"></script>
+</body>
+</html>

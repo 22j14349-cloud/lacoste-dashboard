@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lacoste Dashboard · Financials</title>
+<meta name="description" content="Lacoste sales since 2019, growth rates, the €4bn target and channel mix.">
+<link rel="icon" href="assets/img/lacoste-logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script>(function(){var t;try{t=localStorage.getItem("lc-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
+</head>
+<body data-page="financials">
+<main class="page" id="page">
+
+  <header class="page-head" data-reveal>
+    <div>
+      <span class="eyebrow">Financials & growth</span>
+      <h1 class="page-title">Growing toward €4 billion</h1>
+      <p class="page-lede">Sales rebounded from the pandemic to close to €3bn in 2024. Management now targets €4bn by 2028–30, led by the United States.</p>
+    </div>
+  </header>
+
+  <div class="filter-row" role="group" aria-label="Chart filters" data-reveal>
+    <span class="lbl">Range</span>
+    <button class="pill" type="button" data-range="all" aria-pressed="true">2018 – 2024</button>
+    <button class="pill" type="button" data-range="post" aria-pressed="false">Post-pandemic (2021+)</button>
+    <span style="width:12px"></span>
+    <label class="switch"><input type="checkbox" id="showEst" checked> Show estimates</label>
+  </div>
+
+  <section class="grid kpi-grid">
+    <article class="card kpi lift span-3" data-reveal>
+      <div class="kpi-top"><span class="kpi-icon"><i data-lucide="banknote"></i></span><span class="badge reported">Reported</span></div>
+      <div class="label">Brand sales, 2024</div>
+      <div class="value" data-count="3.0" data-decimals="1" data-prefix="≈ €" data-suffix="bn">≈ €0bn</div>
+      <div class="delta up">+8% vs 2023</div>
+    </article>
+    <article class="card kpi lift span-3" data-reveal>
+      <div class="kpi-top"><span class="kpi-icon"><i data-lucide="rocket"></i></span><span class="badge reported">Reported</span></div>
+      <div class="label">Growth in 2022</div>
+      <div class="value" data-count="26" data-decimals="0" data-prefix="+" data-suffix="%">+0%</div>
+      <div class="delta">Post-pandemic rebound</div>
+    </article>
+    <article class="card kpi lift span-3" data-reveal>
+      <div class="kpi-top"><span class="kpi-icon"><i data-lucide="flag"></i></span><span class="badge reported">Reported</span></div>
+      <div class="label">US business</div>
+      <div class="value" data-count="400" data-decimals="0" data-prefix="≈ €" data-suffix="m">≈ €0m</div>
+      <div class="delta">Goal: double it</div>
+    </article>
+    <article class="card kpi lift span-3" data-reveal>
+      <div class="kpi-top"><span class="kpi-icon"><i data-lucide="store"></i></span><span class="badge reported">Reported</span></div>
+      <div class="label">Sold through own retail</div>
+      <div class="value" data-count="70" data-decimals="0" data-prefix="≈ " data-suffix="%">≈ 0%</div>
+      <div class="delta">vs ≈ 30% wholesale</div>
+    </article>
+  </section>
+
+  <section class="grid mt-20">
+    <article class="card span-7" data-reveal>
+      <header class="card-head">
+        <div><h3>Annual brand sales</h3><p class="sub">€ billions · solid = reported, light = estimate · 2020 not disclosed</p></div>
+        <div class="card-tools"></div>
+      </header>
+      <div class="chart" id="sales" style="height:330px"></div>
+      <footer class="card-foot" data-src="s9 s10 s7 s8 s1"></footer>
+    </article>
+
+    <article class="card span-5" data-reveal>
+      <header class="card-head">
+        <div><h3>Year-on-year growth</h3><p class="sub">% change in brand sales</p></div>
+        <div class="card-tools"></div>
+      </header>
+      <div class="chart" id="growth" style="height:330px"></div>
+      <footer class="card-foot" data-src="s11 s9 s7"></footer>
+    </article>
+  </section>
+
+  <section class="grid mt-20">
+    <article class="card span-8" data-reveal>
+      <header class="card-head">
+        <div><h3>Three roads to €4bn</h3><p class="sub">Illustrative compounding from ≈ €3.0bn (2024) at the ends and middle of the 5–10% guidance</p></div>
+        <div class="card-tools"></div>
+      </header>
+      <div class="chart" id="scenarios" style="height:330px"></div>
+      <footer class="card-foot" data-src="s8 s13"></footer>
+    </article>
+
+    <article class="card span-4" data-reveal>
+      <header class="card-head"><div><h3>Where it's sold</h3><p class="sub">Channel mix under Thierry Guibert</p></div><span class="badge reported">Reported</span></header>
+      <div class="big-number">70<span style="font-size:.5em">%</span></div>
+      <p class="small ink-2 mt-8">of sales go through Lacoste's own stores and e-commerce — the reverse of the old ≈ 30/70 wholesale-led model.</p>
+      <div class="split-bar mt-16" role="img" aria-label="Own retail 70 percent, wholesale 30 percent">
+        <span style="width:70%;background:var(--s1)"></span><span style="width:30%;background:var(--s-other)"></span>
+      </div>
+      <div class="legend-inline"><span><i style="background:var(--s1)"></i>Own retail 70%</span><span><i style="background:var(--s-other)"></i>Wholesale 30%</span></div>
+      <footer class="card-foot" data-src="s1"></footer>
+    </article>
+  </section>
+
+  <section class="grid mt-20">
+    <article class="card span-4" data-reveal>
+      <header class="card-head"><div><h3>The American bet</h3><p class="sub">US business vs the goal</p></div><span class="badge reported">Reported</span></header>
+      <div class="big-number">€400m</div>
+      <p class="small ink-2 mt-8">≈ 13% of 2024 sales (dashboard estimate). The plan is to double it, anchored by a new Fifth Avenue store in New York.</p>
+      <div class="meter mt-16" aria-label="Halfway to 800 million euro goal"><span data-w="50"></span></div>
+      <div class="legend-inline"><span>€400m today</span><span style="margin-left:auto">€800m goal</span></div>
+      <footer class="card-foot" data-src="s8 s7 s26"></footer>
+    </article>
+
+    <article class="card span-4" data-reveal>
+      <header class="card-head"><div><h3>Fragrance licence</h3><p class="sub">Interparfums licence, signed 2022</p></div><span class="badge reported">Reported</span></header>
+      <div class="big-number">€52m</div>
+      <p class="small ink-2 mt-8">Lacoste fragrance sales in H1 2025, up 42%. Full-year 2025 growth: +28%. Annual target: €100m.</p>
+      <div class="meter mt-16" aria-label="H1 2025 sales are 52 percent of the 100 million euro annual target"><span data-w="52"></span></div>
+      <div class="legend-inline"><span>H1 2025: €52m</span><span style="margin-left:auto">€100m annual goal</span></div>
+      <footer class="card-foot" data-src="s16 s17"></footer>
+    </article>
+
+    <article class="card span-4" data-reveal>
+      <header class="card-head"><div><h3>Reading these numbers</h3><p class="sub">What's solid and what isn't</p></div></header>
+      <div class="notes">
+        <div class="note"><b>Private company.</b> Lacoste (via MF Brands) publishes no audited accounts. Sales come from executive interviews.</div>
+        <div class="note"><b>Sources disagree on 2023.</b> Wikipedia says €2.9bn; working back from 2024's +8% gives ≈ €2.75bn.</div>
+        <div class="note"><b>Parent group, 2019:</b> MF Brands posted €2.64bn excluding licences, €3.21bn including them.</div>
+      </div>
+      <footer class="card-foot" data-src="s1 s11 s7"></footer>
+    </article>
+  </section>
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/pages/financials.js"></script>
+</body>
+</html>

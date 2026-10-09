@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lacoste Dashboard · Rivals</title>
+<meta name="description" content="Lacoste compared with Hugo Boss, Ralph Lauren and PVH on revenue, growth and heritage.">
+<link rel="icon" href="assets/img/lacoste-logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script>(function(){var t;try{t=localStorage.getItem("lc-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
+</head>
+<body data-page="competitors">
+<main class="page" id="page">
+
+  <header class="page-head" data-reveal>
+    <div>
+      <span class="eyebrow">Rivals</span>
+      <h1 class="page-title">How the crocodile compares</h1>
+      <p class="page-lede">Lacoste is the smallest of the four premium-sportswear houses here — but grew faster than all but Ralph Lauren in its latest reported year.</p>
+    </div>
+  </header>
+
+  <section class="grid kpi-grid">
+    <article class="card kpi lift span-4" data-reveal>
+      <div class="kpi-top"><span class="kpi-icon"><i data-lucide="scale"></i></span><span class="badge estimate">Estimate</span></div>
+      <div class="label">Ralph Lauren vs Lacoste, by revenue</div>
+      <div class="value" id="kRatio">—</div>
+      <div class="delta">at 1 EUR = 1.15 USD</div>
+    </article>
+    <article class="card kpi lift span-4" data-reveal>
+      <div class="kpi-top"><span class="kpi-icon"><i data-lucide="trending-up"></i></span><span class="badge reported">Reported</span></div>
+      <div class="label">Lacoste growth vs rivals' median</div>
+      <div class="value" id="kGrowth">—</div>
+      <div class="delta" id="kGrowthD"></div>
+    </article>
+    <article class="card kpi lift span-4" data-reveal>
+      <div class="kpi-top"><span class="kpi-icon"><i data-lucide="landmark"></i></span><span class="badge neutral">Ownership</span></div>
+      <div class="label">The only privately held brand</div>
+      <div class="value">1 of 4</div>
+      <div class="delta">Owned by Swiss family group Maus Frères</div>
+    </article>
+  </section>
+
+  <div class="filter-row mt-20" role="group" aria-label="Highlight" data-reveal>
+    <span class="lbl">Highlight</span>
+    <span id="hlPills" style="display:contents"></span>
+  </div>
+
+  <section class="grid">
+    <article class="card span-7" data-reveal>
+      <header class="card-head">
+        <div><h3>Latest annual revenue</h3><p class="sub">€ billions · USD converted at 1 EUR = 1.15 USD · periods differ</p></div>
+        <div class="card-tools"></div>
+      </header>
+      <div class="chart" id="rev" style="height:280px"></div>
+      <footer class="card-foot" data-src="s7 s23 s21 s22"></footer>
+    </article>
+    <article class="card span-5" data-reveal>
+      <header class="card-head">
+        <div><h3>Latest reported growth</h3><p class="sub">% change in revenue, reported currency</p></div>
+        <div class="card-tools"></div>
+      </header>
+      <div class="chart" id="gro" style="height:280px"></div>
+      <footer class="card-foot" data-src="s7 s23 s21 s22"></footer>
+    </article>
+  </section>
+
+  <section class="grid mt-20">
+    <article class="card span-5" data-reveal>
+      <header class="card-head">
+        <div><h3>Heritage isn't scale</h3><p class="sub">Founding year vs latest revenue (€bn)</p></div>
+        <div class="card-tools"></div>
+      </header>
+      <div class="chart" id="age" style="height:300px"></div>
+      <footer class="card-foot" data-src="s7 s23 s21 s22"></footer>
+    </article>
+    <article class="card span-7" data-reveal>
+      <header class="card-head"><div><h3>Side by side</h3><p class="sub">Click a column header to sort</p></div></header>
+      <div style="overflow-x:auto"><table class="data" id="cmp"></table></div>
+      <div class="callout mt-16"><i data-lucide="info"></i><span>Not a like-for-like comparison: fiscal years differ (Ralph Lauren's ends in March), PVH reports Tommy Hilfiger and Calvin Klein together, and Lacoste's figure is an executive's round number.</span></div>
+      <footer class="card-foot" data-src="s7 s23 s21 s22"></footer>
+    </article>
+  </section>
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/pages/competitors.js"></script>
+</body>
+</html>

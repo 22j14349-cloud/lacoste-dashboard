@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lacoste Dashboard · Brand & sport</title>
+<meta name="description" content="Lacoste history from 1923 to 2026, ambassadors, tournament partnerships and leadership.">
+<link rel="icon" href="assets/img/lacoste-logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script>(function(){var t;try{t=localStorage.getItem("lc-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
+<style>
+  .quote {
+    font-family: var(--font-display); font-size: clamp(22px, 2.4vw, 30px); line-height: 1.3; font-weight: 500; letter-spacing: -0.01em;
+  }
+  .quote em { color: var(--brand); }
+  .collab { display: flex; justify-content: space-between; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .collab:last-child { border-bottom: 0; }
+  .collab b { font-weight: 600; }
+  .collab span { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .tl-count { font-size: 12px; color: var(--muted); margin-left: auto; }
+</style>
+</head>
+<body data-page="brand">
+<main class="page" id="page">
+
+  <header class="page-head" data-reveal>
+    <div>
+      <span class="eyebrow">Brand story & sport</span>
+      <h1 class="page-title">From a tennis nickname to a global icon</h1>
+      <p class="page-lede">In 1923 a journalist called René Lacoste “the Crocodile”. Ten years later the nickname became a logo — and a brand that still lives on the tennis court.</p>
+    </div>
+  </header>
+
+  <section class="grid">
+    <article class="card span-8" data-reveal>
+      <header class="card-head">
+        <div><h3>Timeline, 1923 – 2026</h3><p class="sub">Filter by theme · colour and label mark each milestone's theme</p></div>
+      </header>
+      <div class="filter-row" role="group" aria-label="Timeline filter" id="tlFilter" style="margin-bottom:18px">
+        <button class="pill" type="button" data-cat="all" aria-pressed="true">All</button>
+        <button class="pill" type="button" data-cat="brand" aria-pressed="false"><span class="sw" style="background:var(--s1)"></span>Brand & product</button>
+        <button class="pill" type="button" data-cat="sport" aria-pressed="false"><span class="sw" style="background:var(--s2)"></span>Sport</button>
+        <button class="pill" type="button" data-cat="company" aria-pressed="false"><span class="sw" style="background:var(--s3)"></span>Company</button>
+        <span class="tl-count" id="tlCount"></span>
+      </div>
+      <ol class="timeline" id="timeline"></ol>
+      <footer class="card-foot" data-src="s2 s1 s12 s29 s13 s14 s15 s3"></footer>
+    </article>
+
+    <div class="span-4" style="display:flex;flex-direction:column;gap:20px;min-width:0">
+      <article class="card" data-reveal>
+        <p class="quote">“The <em>Crocodile</em>” — a nickname from a lost bet over a crocodile-skin suitcase, Boston, 1923.</p>
+        <p class="small muted mt-12">René Lacoste was world No. 1 in 1926–27. The crocodile, drawn by Robert George in 1927, became the logo in 1933.</p>
+        <footer class="card-foot" data-src="s2 s25"></footer>
+      </article>
+
+      <article class="card" data-reveal>
+        <header class="card-head">
+          <div><h3>Tournament partnerships</h3><p class="sub">Years as partner, to 2026</p></div>
+          <div class="card-tools"></div>
+        </header>
+        <div class="chart" id="sponsor" style="height:200px;min-height:200px"></div>
+        <footer class="card-foot" data-src="s2 s1"></footer>
+      </article>
+
+      <article class="card" data-reveal>
+        <header class="card-head"><div><h3>Collaborations</h3><p class="sub">Selected partner labels and special editions</p></div></header>
+        <div id="collabs"></div>
+        <footer class="card-foot" data-src="s1 s3"></footer>
+      </article>
+    </div>
+  </section>
+
+  <section class="grid mt-20">
+    <article class="card span-12" data-reveal>
+      <header class="card-head">
+        <div><h3>Ambassadors</h3><p class="sub">The faces of the crocodile — from Grand Slam champions to K-pop and Formula 1</p></div>
+      </header>
+      <div class="filter-row" role="group" aria-label="Ambassador filter" id="ambFilter" style="margin-bottom:16px"></div>
+      <div class="amb-grid" id="amb"></div>
+      <footer class="card-foot" data-src="s2 s1 s3"></footer>
+    </article>
+  </section>
+
+  <section class="grid mt-20">
+    <article class="card span-12" data-reveal>
+      <header class="card-head">
+        <div><h3>Who's in charge</h3><p class="sub">Chief executives since 2015 and creative directors since 2001 · hover or tap a bar for names and dates</p></div>
+        <div class="card-tools"></div>
+      </header>
+      <div class="chart" id="tenure" style="height:220px;min-height:220px"></div>
+      <footer class="card-foot" data-src="s1 s2 s13 s14"></footer>
+    </article>
+  </section>
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/pages/brand.js"></script>
+</body>
+</html>

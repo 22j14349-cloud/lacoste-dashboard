@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lacoste Dashboard · Global presence</title>
+<meta name="description" content="Interactive world map of Lacoste's key markets, flagships, tournaments and experiences.">
+<link rel="icon" href="assets/img/lacoste-logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script>(function(){var t;try{t=localStorage.getItem("lc-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
+<style>
+  .list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; max-height: 470px; overflow-y: auto; }
+  .list button {
+    width: 100%; text-align: left; cursor: pointer; border: 1px solid transparent; background: transparent;
+    padding: 10px 12px; border-radius: 10px; display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .list button:hover, .list button:focus-visible { background: var(--surface-2); border-color: var(--line); }
+  .list .nm { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .list .nm i.k { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .list .vl { font-weight: 700; font-size: 14px; }
+  .list .sb { grid-column: 1 / -1; font-size: 12px; color: var(--muted); }
+  .list .bar { grid-column: 1 / -1; height: 6px; border-radius: 999px; background: var(--brand-soft); overflow: hidden; }
+  .list .bar span { display: block; height: 100%; background: var(--s1); border-radius: 999px; }
+  .map-chart { height: 470px; }
+  @media (max-width: 600px) { .map-chart { height: 320px; } }
+  .group-h { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); font-weight: 600; padding: 10px 12px 2px; }
+  .spot { display: grid; gap: 12px; }
+  .spot .row { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 14px; border-radius: 12px; background: var(--surface-2); }
+  .spot .c { font-weight: 600; }
+  .spot .f { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; text-align: right; }
+  .spot .d { font-size: 13px; color: var(--ink-2); }
+  .spot .y { font-size: 12px; color: var(--muted); text-align: right; }
+</style>
+</head>
+<body data-page="global">
+<main class="page" id="page">
+
+  <header class="page-head" data-reveal>
+    <div>
+      <span class="eyebrow">Global presence</span>
+      <h1 class="page-title">A crocodile on every continent</h1>
+      <p class="page-lede">Around 1,100 boutiques in roughly 100 countries. The US is the largest single market and the main growth bet; France is home.</p>
+    </div>
+  </header>
+
+  <section class="grid kpi-grid">
+    <article class="card kpi lift span-3" data-reveal>
+      <div class="kpi-top"><span class="kpi-icon"><i data-lucide="store"></i></span><span class="badge reported">Reported</span></div>
+      <div class="label">Boutiques</div>
+      <div class="value" data-count="1100" data-prefix="≈ ">≈ 0</div>
+      <div class="delta">Own stores and department-store concessions</div>
+    </article>
+    <article class="card kpi lift span-3" data-reveal>
+      <div class="kpi-top"><span class="kpi-icon"><i data-lucide="globe"></i></span><span class="badge reported">Reported</span></div>
+      <div class="label">Countries</div>
+      <div class="value" data-count="98" data-prefix="">0</div>
+      <div class="delta">"Nearly 100", per Lacoste Careers</div>
+    </article>
+    <article class="card kpi lift span-3" data-reveal>
+      <div class="kpi-top"><span class="kpi-icon"><i data-lucide="users"></i></span><span class="badge reported">Reported</span></div>
+      <div class="label">Employees</div>
+      <div class="value" data-count="8500" data-prefix="≈ ">≈ 0</div>
+      <div class="delta">Company figure; trackers say 8–10k</div>
+    </article>
+    <article class="card kpi lift span-3" data-reveal>
+      <div class="kpi-top"><span class="kpi-icon"><i data-lucide="trending-up"></i></span><span class="badge reported">Reported</span></div>
+      <div class="label">Fastest-growing region, 2022</div>
+      <div class="value" data-count="60" data-prefix="+" data-suffix="%">+0%</div>
+      <div class="delta">South America</div>
+    </article>
+  </section>
+
+  <div class="filter-row mt-20" role="group" aria-label="Map layer" data-reveal>
+    <span class="lbl">Map layer</span>
+    <button class="pill" type="button" data-mode="share" aria-pressed="true"><i data-lucide="pie-chart" style="width:14px;height:14px"></i>Share of sales (2011)</button>
+    <button class="pill" type="button" data-mode="landmarks" aria-pressed="false"><i data-lucide="map-pin" style="width:14px;height:14px"></i>Landmarks</button>
+    <button class="pill" type="button" id="resetMap"><i data-lucide="rotate-ccw" style="width:14px;height:14px"></i>Reset view</button>
+  </div>
+
+  <section class="grid">
+    <article class="card span-8" data-reveal>
+      <header class="card-head">
+        <div><h3 id="mapTitle">Top markets by share of worldwide sales</h3><p class="sub" id="mapSub">2011 snapshot — the latest full country split published · drag to pan, scroll to zoom</p></div>
+        <div class="card-tools"></div>
+      </header>
+      <div class="chart map-chart" id="map"></div>
+      <footer class="card-foot" id="mapFoot" data-src="s19"></footer>
+    </article>
+
+    <article class="card span-4" data-reveal>
+      <header class="card-head"><div><h3 id="listTitle">Ranking</h3><p class="sub" id="listSub">Click a country to zoom</p></div></header>
+      <ul class="list" id="list"></ul>
+    </article>
+  </section>
+
+  <section class="grid mt-20">
+    <article class="card span-7" data-reveal>
+      <header class="card-head">
+        <div><h3>Growth by region, 2022</h3><p class="sub">% change in sales — every region grew double digits</p></div>
+        <div class="card-tools"></div>
+      </header>
+      <div class="chart" id="regions" style="height:290px"></div>
+      <footer class="card-foot" data-src="s9"></footer>
+    </article>
+
+    <article class="card span-5" data-reveal>
+      <header class="card-head"><div><h3>Country spotlight</h3><p class="sub">The most recent country figures in the public record</p></div></header>
+      <div class="spot" id="spot"></div>
+      <footer class="card-foot" data-src="s8 s18 s9"></footer>
+    </article>
+  </section>
+
+  <div class="callout mt-20" data-reveal><i data-lucide="info"></i><span>The map shades only countries with a published share. Lacoste sells in about 100 countries, but it doesn't publish a full country list or a recent regional split.</span></div>
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+<script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/pages/global.js"></script>
+</body>
+</html>

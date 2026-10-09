@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lacoste Dashboard · Sustainability</title>
+<meta name="description" content="Lacoste's Durable Elegance programme: SBTi climate targets, milestones and criticism.">
+<link rel="icon" href="assets/img/lacoste-logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script>(function(){var t;try{t=localStorage.getItem("lc-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
+<style>
+  .crit { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .crit li { display: grid; grid-template-columns: 52px 1fr; gap: 12px; font-size: 14px; color: var(--ink-2); }
+  .crit .y { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; padding-top: 1px; }
+  .values { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .values span { padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); font-size: 13px; }
+  .durable {
+    border-radius: 24px; padding: 30px 32px; color: #eef6f0; position: relative; overflow: hidden;
+    background: radial-gradient(500px 260px at 100% 0%, rgba(224,161,0,.25), transparent 60%), linear-gradient(135deg, #0b3d26, #0b5c34 60%, #1f8a54);
+  }
+  .durable h2 { font-family: var(--font-display); font-size: clamp(26px, 3vw, 36px); font-weight: 600; letter-spacing: -0.02em; }
+  .durable p { color: #cfe5d7; max-width: 760px; margin-top: 10px; }
+  .durable .eyebrow { color: #bfe8cf; }
+  @media (max-width: 600px) { #targets > .span-3 { grid-column: span 6; padding: 14px 10px; } .target-tile .tb { font-size: 11px; } }
+  .durable .src-light, .durable .src-light a { color: #bfe8cf; }
+  .durable .src-list a + a::before { content: " · "; }
+</style>
+</head>
+<body data-page="sustainability">
+<main class="page" id="page">
+
+  <section class="durable" data-reveal>
+    <span class="eyebrow">Sustainability · Durable Elegance</span>
+    <h2 class="mt-8">98% of the footprint sits in the value chain</h2>
+    <p>Lacoste's climate targets are validated by the Science Based Targets initiative (SBTi). Because its own offices and stores make up only about 2% of emissions, the real work happens in suppliers' factories, materials and energy.</p>
+    <div class="values"><span>Teamwork</span><span>Daring</span><span>Inventiveness</span><span>Elegance</span><span>Tenacity</span></div>
+    <p class="small src-light mt-16" data-src="s4 s25"></p>
+  </section>
+
+  <section class="grid mt-20" id="targets"></section>
+
+  <section class="grid mt-20">
+    <article class="card span-8" data-reveal>
+      <header class="card-head">
+        <div><h3>The 2030 pathways</h3><p class="sub">Emissions indexed to 2019 = 100 · straight-line paths from baseline to target (illustrative — not reported progress)</p></div>
+        <div class="card-tools"></div>
+      </header>
+      <div class="chart" id="pathway" style="height:320px"></div>
+      <footer class="card-foot" data-src="s4 s5"></footer>
+    </article>
+
+    <article class="card span-4" data-reveal>
+      <header class="card-head"><div><h3>Where emissions come from</h3><p class="sub">Share of Lacoste's carbon footprint</p></div><span class="badge reported">Reported</span></header>
+      <div class="big-number">98<span style="font-size:.5em">%</span></div>
+      <p class="small ink-2 mt-8">Scope 3 — materials, suppliers' factories, transport and product use. Lacoste's own sites (Scope 1 & 2) are about 2%.</p>
+      <div class="split-bar mt-16" role="img" aria-label="Scope 3: 98 percent; Scope 1 and 2: 2 percent">
+        <span style="width:98%;background:var(--s1)"></span><span style="width:2%;min-width:6px;background:var(--s2)"></span>
+      </div>
+      <div class="legend-inline"><span><i style="background:var(--s1)"></i>Scope 3 · 98%</span><span><i style="background:var(--s2)"></i>Scope 1 & 2 · 2%</span></div>
+      <div class="callout mt-16"><i data-lucide="alert-circle"></i><span>No net-zero target yet. The FY2025 climate report keeps the 2030 goals and adds adaptation.</span></div>
+      <footer class="card-foot" data-src="s4 s5"></footer>
+    </article>
+  </section>
+
+  <section class="grid mt-20">
+    <article class="card span-6" data-reveal>
+      <header class="card-head"><div><h3>Milestones</h3><p class="sub">Committed deadlines, 2025 – 2030</p></div></header>
+      <ul class="milestones" id="miles"></ul>
+      <p class="small muted mt-16">2025 deadlines have passed; public sources reviewed here don't yet confirm whether they were met.</p>
+      <footer class="card-foot" data-src="s4 s5"></footer>
+    </article>
+
+    <article class="card span-6" data-reveal>
+      <header class="card-head"><div><h3>The critics' view</h3><p class="sub">Controversies and third-party assessments</p></div></header>
+      <ul class="crit" id="crit"></ul>
+      <footer class="card-foot" data-src="s1 s24 s5"></footer>
+    </article>
+  </section>
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/pages/sustainability.js"></script>
+</body>
+</html>

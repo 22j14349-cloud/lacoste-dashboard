@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lacoste Dashboard · Products</title>
+<meta name="description" content="Lacoste product categories, licensees, launch years and innovations.">
+<link rel="icon" href="assets/img/lacoste-logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script>(function(){var t;try{t=localStorage.getItem("lc-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
+<style>
+  .inno { display: flex; flex-direction: column; gap: 10px; }
+  .inno .y { font-family: var(--font-display); font-size: 40px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; color: var(--brand); }
+  .inno p { color: var(--ink-2); font-size: 14px; }
+  .model-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; }
+  .model-pill.in { background: var(--brand-soft); color: var(--brand); }
+  .model-pill.lic { background: var(--ochre-soft); color: var(--est); }
+</style>
+</head>
+<body data-page="products">
+<main class="page" id="page">
+
+  <header class="page-head" data-reveal>
+    <div>
+      <span class="eyebrow">Products & licences</span>
+      <h1 class="page-title">From the 1933 polo to padel</h1>
+      <p class="page-lede">One shirt grew into eight categories. Some are made in-house, others by specialist licensees — and under Thierry Guibert several licences were bought back.</p>
+    </div>
+  </header>
+
+  <section class="grid">
+    <article class="card span-7" data-reveal>
+      <header class="card-head"><div><h3>Category explorer</h3><p class="sub">Pick a category to see who makes it and when it began</p></div></header>
+      <div class="cat-grid" id="cats" role="group" aria-label="Product categories"></div>
+    </article>
+    <article class="card span-5" data-reveal>
+      <div class="cat-detail" id="catDetail" aria-live="polite"></div>
+      <footer class="card-foot" id="catSrc" data-src="s2"></footer>
+    </article>
+  </section>
+
+  <section class="grid mt-20">
+    <article class="card span-8" data-reveal>
+      <header class="card-head">
+        <div><h3>How long each category has existed</h3><p class="sub">Years since first launch, to 2026 · ● in-house ● licensed</p></div>
+        <div class="card-tools"></div>
+      </header>
+      <div class="chart" id="ages" style="height:340px"></div>
+      <footer class="card-foot" data-src="s2 s1 s3"></footer>
+    </article>
+
+    <article class="card span-4" data-reveal>
+      <header class="card-head"><div><h3>Make or license?</h3><p class="sub">Current model across the eight categories</p></div></header>
+      <div class="stat-row">
+        <div class="mini-stat"><div class="v" id="nIn">0</div><div class="l">made in-house</div></div>
+        <div class="mini-stat"><div class="v" id="nLic">0</div><div class="l">licensed out</div></div>
+      </div>
+      <div class="split-bar mt-16" id="modelBar" role="img"></div>
+      <div class="legend-inline"><span><i style="background:var(--s1)"></i>In-house</span><span><i style="background:var(--s2)"></i>Licensed</span></div>
+      <p class="small ink-2 mt-16">Leather goods, footwear and underwear licences were bought back to control quality and distribution. Fragrance, eyewear, watches and kidswear stay with specialists.</p>
+      <footer class="card-foot" data-src="s1"></footer>
+    </article>
+  </section>
+
+  <section class="mt-20">
+    <div class="page-head" style="margin-bottom:14px" data-reveal>
+      <div><span class="eyebrow">Innovation</span><h2 class="page-title" style="font-size:28px">René Lacoste, inventor</h2></div>
+    </div>
+    <div class="grid" id="innos"></div>
+  </section>
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/pages/products.js"></script>
+</body>
+</html>
